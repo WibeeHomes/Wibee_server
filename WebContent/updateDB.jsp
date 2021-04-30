@@ -24,7 +24,5 @@ for(int i=0;i<cityarr.size();i++){// 법정동 리스트의 크기 만큼 for문
 	apidb.apiDB("rh",cityarr.get(i).getCode(),time);	
 }
 
-
-
 %>
 

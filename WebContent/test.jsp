@@ -11,9 +11,9 @@ ApiExplorer apidb=new ApiExplorer();
 <%
 //apidb.apiDB("apt","11110","202104");
 System.out.println("-----apartment complete-------");
-//apidb.apiDB("offi","11110","201512");
+apidb.apiDB("offi","11110","202104");
 System.out.println("-------office complete-------");
-apidb.apiDB("rh","11110","201512");
+//apidb.apiDB("rh","11110","201512");
 System.out.println("-----rh complete------");
 %>
 <!DOCTYPE html>

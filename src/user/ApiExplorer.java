@@ -31,11 +31,15 @@ import java.sql.SQLException;
 
 
 public class ApiExplorer {
-	//기존 테이블 drop 하는 함수 
+	//기존 테이블 drop 하는 함수
+	
 	//테이블 create 하는 함수 
-	//
+	
 	//API 파싱해서 DB에 저장하는 함수
     public void apiDB(String type, String loc, String time) throws IOException, ParserConfigurationException, SAXException {
+    	
+    	home addHome=new home();
+    	double[] xy=new double[2];
     	
     	StringBuilder urlBuilder = null;
     	if(type=="apt") {
@@ -71,60 +75,96 @@ public class ApiExplorer {
         
         System.out.println("파싱할 리스트 수 : "+ nList.getLength());
         
-        if(type=="apt") {
-        	for(int i=0; i<nList.getLength(); i++) {
-                Node nNode=nList.item(i);
-                if(nNode.getNodeType()==Node.ELEMENT_NODE) {
-                    Element eElement=(Element) nNode;
-                    System.out.println("건축년도  : " + getTagValue("건축년도", eElement));
-            		System.out.println("아파단지   : #" + getTagValue("법정동", eElement)+"#");
-            		System.out.println("법정동  : " + getTagValue("보증금액", eElement));
-            		System.out.println("보증금 : " + getTagValue("아파트", eElement));
-            		System.out.println("월세 금 : #" + getTagValue("월세금액", eElement)+"#");
-            		System.out.println("전용 면적  : " + getTagValue("전용면적", eElement));
-            		System.out.println("지번  : " + getTagValue("지번", eElement));
-            		System.out.println("지역코드  : " + getTagValue("지역코드", eElement));
-            		System.out.println("층  : " + getTagValue("층", eElement));
-                }
-            }
-   	}else if(type=="offi") {
-   		for(int i=0; i<nList.getLength(); i++) {
-            Node nNode=nList.item(i);
-            if(nNode.getNodeType()==Node.ELEMENT_NODE) {
-                Element eElement=(Element) nNode;
-
-                System.out.println("오건축년도  : " + getTagValue("건축년도", eElement));
-        		System.out.println("법정동   : #" + getTagValue("법정동", eElement)+"#");
-        		System.out.println("보증금  : " + getTagValue("보증금", eElement));
-        		System.out.println("단지 : " + getTagValue("단지", eElement));
-        		System.out.println("월세 : #" + getTagValue("월세", eElement)+"#");
-        		System.out.println("전용 면적  : " + getTagValue("전용면적", eElement));
-        		System.out.println("지번  : " + getTagValue("지번", eElement));
-        		System.out.println("지역코드  : " + getTagValue("지역코드", eElement));
-        		System.out.println("층  : " + getTagValue("층", eElement));
-            }
-        }
-   	}else if(type=="rh") {
-   		for(int i=0; i<nList.getLength(); i++) {
+        for(int i=0; i<nList.getLength(); i++) {
             Node nNode=nList.item(i);
             if(nNode.getNodeType()==Node.ELEMENT_NODE) {
                 Element eElement=(Element) nNode;
                 
-                System.out.println("----------");
-        		System.out.println("연건축년도  : " + getTagValue("건축년도", eElement));
-        		System.out.println("법정동   : *" + getTagValue("법정동", eElement)+"*");
-        		System.out.println("보증금액  : " + getTagValue("보증금액", eElement));
-        		System.out.println("연립다세대 : " + getTagValue("연립다세대", eElement));
-        		System.out.println("월세 금액 : *" + getTagValue("월세금액", eElement)+"*");
-        		System.out.println("전용 면적  : " + getTagValue("전용면적", eElement));
-        		System.out.println("지번  : " + getTagValue("지번", eElement));
-        		System.out.println("지역코드  : " + getTagValue("지역코드", eElement));
-        		String x=getTagValue("층", eElement);
-        		if(x!=null) {System.out.println("층  : " + x);}
+                addHome.hYear=Integer.parseInt(getTagValue("건축년도", eElement));// 집 건축년도
+            	String test=getTagValue("층", eElement);
+            	if(test!=null)addHome.hFloor= Integer.parseInt(test); //층수
+            	addHome.hArea=Double.parseDouble(getTagValue("전용면적", eElement)); // 면적
+            	addHome.addDong=getTagValue("법정동", eElement);// 주소-법정동
+            	addHome.addJibun=getTagValue("지번", eElement);// 지번
+            	            	
+            	if(type=="apt") {
+            		addHome.hName= getTagValue("아파트", eElement); // 집 이름
+            		addHome.warFee =getTagValue("보증금액", eElement);// 보증금
+                	addHome.renFee= getTagValue("월세금액", eElement); // 월세
+                	addHome.hCate=0; //카테고리(아파트, 연립주택, 오피스텔)
+
+            	}
+            	else if(type=="offi") {
+            		addHome.hName= getTagValue("단지", eElement); // 집 이름
+            		addHome.warFee =getTagValue("보증금", eElement);// 보증금
+                	addHome.renFee= getTagValue("월세", eElement); // 월세
+                	addHome.hCate=1; //카테고리(아파트, 연립주택, 오피스텔)
+
+            	}
+            	else if(type=="rb") {
+            		addHome.hName= getTagValue("연립다세대", eElement); // 집 이름
+            		addHome.warFee =getTagValue("보증금액", eElement);// 보증금
+                	addHome.renFee= getTagValue("월세금액", eElement); // 월세
+                	addHome.hCate=2; //카테고리(아파트, 연립주택, 오피스텔)
+            	}
+            	xy=calXY(addHome.addDong+addHome.addJibun);
+                addHome.pointX=xy[0];
+                addHome.pointY=xy[1];
+                
+                System.out.println(addHome.addDong+addHome.addJibun+"%%");
+                System.out.println(xy[0]);
+                System.out.println(xy[1]);
+                System.out.println("---------");
+            
             }
         }
-   	}
+        
+        
 
+        
+       
+      
+       
+       
+
+    }
+    
+    // 주소를 이용 현재 경도와 위도를 가져오는 api 이용함수   
+    public double[] calXY(String name) throws IOException, ParserConfigurationException, SAXException {
+        String parsingUrl="";
+        String key= "340FCCC5-C1C9-31D4-B7D8-56BC7558298A";
+        double xy[]=new double[2];
+        
+        StringBuilder urlBuilder = new StringBuilder("http://api.vworld.kr/req/search?"); /*URL*/
+        urlBuilder.append(URLEncoder.encode("service","UTF-8") + "="+URLEncoder.encode("search", "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("request","UTF-8") + "="+ URLEncoder.encode("search", "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("version","UTF-8") + "=" + URLEncoder.encode("2.0", "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("query","UTF-8") + "=" + URLEncoder.encode(name, "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("type","UTF-8") + "=" + URLEncoder.encode("place", "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("format","UTF-8") + "=" + URLEncoder.encode("xml", "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("errorformat","UTF-8") + "=" + URLEncoder.encode("xml", "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("key","UTF-8") + "=" + URLEncoder.encode(key, "UTF-8"));
+
+        URL url = new URL(urlBuilder.toString());
+        parsingUrl=url.toString();
+        DocumentBuilderFactory dbFactory=DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder=dbFactory.newDocumentBuilder();
+        Document doc=dBuilder.parse(parsingUrl);
+        doc.getDocumentElement().normalize();
+
+        NodeList nList=doc.getElementsByTagName("item"); //장소 전체 노드
+
+        for(int i=0; i<nList.getLength(); i++) {
+            Node nNode=nList.item(i);
+            if(nNode.getNodeType()==Node.ELEMENT_NODE) {
+                Element eElement=(Element) nNode;
+                System.out.println(getTagValue("road",eElement));
+                xy[0]=Double.parseDouble(getTagValue("x",eElement));
+                xy[1]=Double.parseDouble(getTagValue("y",eElement));
+
+            }
+        }
+        return xy;
     }
     
     // 태그 값을 읽어올 함수
@@ -135,10 +175,11 @@ public class ApiExplorer {
         Node test=x.item(0);
         NodeList t=null;
         if(test!=null) {
-        t= test.getChildNodes();
-        
-        if((Node)t.item(0)!=null) {nValue=(Node)t.item(0);}}
+        	t= test.getChildNodes();
+        	if((Node)t.item(0)!=null) {nValue=(Node)t.item(0);}
+        }
         if(nValue==null) return null;
         return nValue.getNodeValue();
-    } 
+    }
+
 }
