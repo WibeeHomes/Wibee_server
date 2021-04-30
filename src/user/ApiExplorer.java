@@ -92,9 +92,8 @@ public class ApiExplorer {
             Node nNode=nList.item(i);
             if(nNode.getNodeType()==Node.ELEMENT_NODE) {
                 Element eElement=(Element) nNode;
-               
-                // 오피스텔 건축년도 null처리 해야
-        		//System.out.println("오건축년도  : " + getTagValue("건축년도", eElement));
+
+                System.out.println("오건축년도  : " + getTagValue("건축년도", eElement));
         		System.out.println("법정동   : #" + getTagValue("법정동", eElement)+"#");
         		System.out.println("보증금  : " + getTagValue("보증금", eElement));
         		System.out.println("단지 : " + getTagValue("단지", eElement));
@@ -111,6 +110,7 @@ public class ApiExplorer {
             if(nNode.getNodeType()==Node.ELEMENT_NODE) {
                 Element eElement=(Element) nNode;
                 
+                System.out.println("----------");
         		System.out.println("연건축년도  : " + getTagValue("건축년도", eElement));
         		System.out.println("법정동   : *" + getTagValue("법정동", eElement)+"*");
         		System.out.println("보증금액  : " + getTagValue("보증금액", eElement));
@@ -119,9 +119,8 @@ public class ApiExplorer {
         		System.out.println("전용 면적  : " + getTagValue("전용면적", eElement));
         		System.out.println("지번  : " + getTagValue("지번", eElement));
         		System.out.println("지역코드  : " + getTagValue("지역코드", eElement));
-        	//시간 남으면 xml null 처리하기,,,, 연립주택은 층 포
-        		//	String x=getTagValue("층", eElement);
-        	//	if(x!=null) {System.out.println("층  : " + x);}
+        		String x=getTagValue("층", eElement);
+        		if(x!=null) {System.out.println("층  : " + x);}
             }
         }
    	}
@@ -130,9 +129,15 @@ public class ApiExplorer {
     
     // 태그 값을 읽어올 함수
     private static String getTagValue(String tag, Element eElement) {
-        NodeList nlList=eElement.getElementsByTagName(tag).item(0).getChildNodes();
         Node nValue=null;
-        if((Node)nlList.item(0)!=null) {nValue=(Node)nlList.item(0);}
+        
+        NodeList x= eElement.getElementsByTagName(tag);
+        Node test=x.item(0);
+        NodeList t=null;
+        if(test!=null) {
+        t= test.getChildNodes();
+        
+        if((Node)t.item(0)!=null) {nValue=(Node)t.item(0);}}
         if(nValue==null) return null;
         return nValue.getNodeValue();
     } 
