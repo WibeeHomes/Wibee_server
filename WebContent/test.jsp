@@ -6,16 +6,15 @@
 
 <%
 ConnectDB connectDB = ConnectDB.getInstance();
-ApiExplorer appii=new ApiExplorer();
+ApiExplorer apidb=new ApiExplorer();
 %>
 <%
-	request.setCharacterEncoding("UTF-8");
-//appii.apiPrint("apartment");
-//System.out.println("-----아파트 -------");
-//appii.apiPrint("office");
-System.out.println("-------쥬택 시작-----");
-appii.apiPrint("alliance");
-System.out.println("-------주택 끝-----");
+apidb.apiDB("apt","11110","202104");
+System.out.println("-----apartment complete-------");
+apidb.apiDB("offi","11110","202104");
+System.out.println("-------office complete-------");
+apidb.apiDB("rh","11110","202104");
+System.out.println("-----rh complete------");
 %>
 <!DOCTYPE html>
 <html>
