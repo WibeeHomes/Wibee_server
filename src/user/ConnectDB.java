@@ -34,37 +34,25 @@ public class ConnectDB {
 	String sql = "";
 	String sql2 = "";
 	
-
-	/* 안드로이드 요청2: 모든 환자 정보 */
-	public JSONArray bringPatientInfo() {
-		JSONArray arr = new JSONArray();
+	// 지역코드 관련 테이블 생성하는 함수 
+	//1. home 정보 추가하는 함수
+	public void homeInsert(home home) {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
-
-			sql = "Select * from patient";
+			sql = "insert into pmoving values(?,?,?,?,?,?)";
 			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			
-
-
-			if(rs != null){
-			while (rs.next()) {
-				JSONObject obj = new JSONObject();
-
-				obj.put("pnum", rs.getString(1));
-				obj.put("plocnum", rs.getString(2));
-				DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd");
-				obj.put("confirmdate", df3.format(rs.getDate(3)));
-				if (obj != null)arr.add(obj);
-			}
-			}
+	/*		pstmt.setString(1, );
+			pstmt.setString(2, plocnum);
+			pstmt.setDate(3, java.sql.Date.valueOf(visitdate));
+			pstmt.setDouble(4, PointX);
+			pstmt.setDouble(5, PointY);
+			pstmt.setNString(6, address);*/
+			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		System.out.println(arr);
-		return arr;
 	}
+	
 
 }

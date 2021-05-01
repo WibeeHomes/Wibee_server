@@ -73,53 +73,50 @@ public class ApiExplorer {
         // XML 데이터 중 <person> 태그의 내용을 가져온다.
         NodeList nList=doc.getElementsByTagName("item");
         
-        System.out.println("파싱할 리스트 수 : "+ nList.getLength());
-        int count=0;
+        System.out.println("파싱할 리스트 수 : "+ nList.getLength()+loc+" "+type);
+ 
         for(int i=0; i<nList.getLength(); i++) {
             Node nNode=nList.item(i);
             if(nNode.getNodeType()==Node.ELEMENT_NODE) {
                 Element eElement=(Element) nNode;
                 
-                addHome.hYear=Integer.parseInt(getTagValue("건축년도", eElement));// 집 건축년도
-            	String test=getTagValue("층", eElement);
-            	if(test!=null)addHome.hFloor= Integer.parseInt(test); //층수
+                String hYear=getTagValue("건축년도", eElement);
+                if(hYear!=null)addHome.hYear=Integer.parseInt(hYear);// 집 건축년도
+            	String floor=getTagValue("층", eElement).trim();
+            	if(floor!=null)addHome.hFloor= Integer.parseInt(floor); //층수
             	addHome.hArea=Double.parseDouble(getTagValue("전용면적", eElement)); // 면적
-            	addHome.addDong=getTagValue("법정동", eElement);// 주소-법정동
+            	addHome.addDong=getTagValue("법정동", eElement).trim();// 주소-법정동
             	addHome.addJibun=getTagValue("지번", eElement);// 지번
             	            	
             	if(type=="apt") {
-            		addHome.hName= getTagValue("아파트", eElement); // 집 이름
-            		addHome.warFee =getTagValue("보증금액", eElement);// 보증금
-                	addHome.renFee= getTagValue("월세금액", eElement); // 월세
+            		addHome.hName= getTagValue("아파트", eElement).trim(); // 집 이름
+            		addHome.warFee =Integer.parseInt(getTagValue("보증금액", eElement).trim().replaceAll(",",""));// 보증금
+            		addHome.renFee=Integer.parseInt(getTagValue("월세금액", eElement).trim()); // 월세
                 	addHome.hCate=0; //카테고리(아파트, 연립주택, 오피스텔)
-
             	}
             	else if(type=="offi") {
-            		addHome.hName= getTagValue("단지", eElement); // 집 이름
-            		addHome.warFee =getTagValue("보증금", eElement);// 보증금
-                	addHome.renFee= getTagValue("월세", eElement); // 월세
+            		addHome.hName= getTagValue("단지", eElement).trim(); // 집 이름
+            		addHome.warFee =Integer.parseInt(getTagValue("보증금", eElement).trim().replaceAll(",",""));// 보증금
+            		addHome.renFee=Integer.parseInt(getTagValue("월세", eElement).trim()); // 월세
                 	addHome.hCate=1; //카테고리(아파트, 연립주택, 오피스텔)
-
             	}
-            	else if(type=="rb") {
-            		addHome.hName= getTagValue("연립다세대", eElement); // 집 이름
-            		addHome.warFee =getTagValue("보증금액", eElement);// 보증금
-                	addHome.renFee= getTagValue("월세금액", eElement); // 월세
+            	else if(type=="rh") {
+            		addHome.hName= getTagValue("연립다세대", eElement).trim(); // 집 이름
+            		addHome.warFee =Integer.parseInt(getTagValue("보증금액", eElement).trim().replaceAll(",",""));// 보증금
+                	addHome.renFee=Integer.parseInt(getTagValue("월세금액", eElement).trim()); // 월세
                 	addHome.hCate=2; //카테고리(아파트, 연립주택, 오피스텔)
             	}
             	xy=calXY(addHome.addDong+addHome.addJibun);
-                addHome.pointX=xy[0];//(y,x) 형식??
-                addHome.pointY=xy[1];
-                
+                addHome.pointX=xy[1];//(y,x) 형식??
+                addHome.pointY=xy[0];
             }
-            
+            addHome.printHome();
             //DB에 추가
            if(addHome.pointX!=0) {
         	   
            }
-           else count++;
         }
-        System.out.println(count);
+
     }
     
     // 주소를 이용 현재 경도와 위도를 가져오는 api 이용함수   
@@ -155,10 +152,8 @@ public class ApiExplorer {
                
                 xy[0]=Double.parseDouble(getTagValue("x",eElement));
                 xy[1]=Double.parseDouble(getTagValue("y",eElement));
-
             }
         }
-        System.out.println(xy[0]);
         return xy;
     }
     
