@@ -74,7 +74,7 @@ public class ApiExplorer {
         NodeList nList=doc.getElementsByTagName("item");
         
         System.out.println("파싱할 리스트 수 : "+ nList.getLength());
-        
+        int count=0;
         for(int i=0; i<nList.getLength(); i++) {
             Node nNode=nList.item(i);
             if(nNode.getNodeType()==Node.ELEMENT_NODE) {
@@ -108,25 +108,18 @@ public class ApiExplorer {
                 	addHome.hCate=2; //카테고리(아파트, 연립주택, 오피스텔)
             	}
             	xy=calXY(addHome.addDong+addHome.addJibun);
-                addHome.pointX=xy[0];
+                addHome.pointX=xy[0];//(y,x) 형식??
                 addHome.pointY=xy[1];
                 
-                System.out.println(addHome.addDong+addHome.addJibun+"%%");
-                System.out.println(xy[0]);
-                System.out.println(xy[1]);
-                System.out.println("---------");
-            
             }
+            
+            //DB에 추가
+           if(addHome.pointX!=0) {
+        	   
+           }
+           else count++;
         }
-        
-        
-
-        
-       
-      
-       
-       
-
+        System.out.println(count);
     }
     
     // 주소를 이용 현재 경도와 위도를 가져오는 api 이용함수   
@@ -140,7 +133,8 @@ public class ApiExplorer {
         urlBuilder.append("&" + URLEncoder.encode("request","UTF-8") + "="+ URLEncoder.encode("search", "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("version","UTF-8") + "=" + URLEncoder.encode("2.0", "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("query","UTF-8") + "=" + URLEncoder.encode(name, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("type","UTF-8") + "=" + URLEncoder.encode("place", "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("type","UTF-8") + "=" + URLEncoder.encode("address", "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("category","UTF-8") + "=" + URLEncoder.encode("parcel", "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("format","UTF-8") + "=" + URLEncoder.encode("xml", "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("errorformat","UTF-8") + "=" + URLEncoder.encode("xml", "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("key","UTF-8") + "=" + URLEncoder.encode(key, "UTF-8"));
@@ -158,12 +152,13 @@ public class ApiExplorer {
             Node nNode=nList.item(i);
             if(nNode.getNodeType()==Node.ELEMENT_NODE) {
                 Element eElement=(Element) nNode;
-                System.out.println(getTagValue("road",eElement));
+               
                 xy[0]=Double.parseDouble(getTagValue("x",eElement));
                 xy[1]=Double.parseDouble(getTagValue("y",eElement));
 
             }
         }
+        System.out.println(xy[0]);
         return xy;
     }
     
