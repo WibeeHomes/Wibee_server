@@ -40,6 +40,7 @@ public class ApiExplorer {
     	
     	home addHome=new home();
     	double[] xy=new double[2];
+    	ConnectDB connectDB = ConnectDB.getInstance();
     	
     	StringBuilder urlBuilder = null;
     	if(type=="apt") {
@@ -81,10 +82,10 @@ public class ApiExplorer {
                 Element eElement=(Element) nNode;
                 
                 String hYear=getTagValue("건축년도", eElement);
-                if(hYear!=null)addHome.hYear=Integer.parseInt(hYear);// 집 건축년도
+                if(hYear!=null)addHome.hYear=hYear;// 집 건축년도
             	String floor=getTagValue("층", eElement).trim();
-            	if(floor!=null)addHome.hFloor= Integer.parseInt(floor); //층수
-            	addHome.hArea=Double.parseDouble(getTagValue("전용면적", eElement)); // 면적
+            	if(floor!=null)addHome.hFloor= floor; //층수
+            	addHome.hArea=getTagValue("전용면적", eElement); // 면적
             	addHome.addDong=getTagValue("법정동", eElement).trim();// 주소-법정동
             	addHome.addJibun=getTagValue("지번", eElement);// 지번
             	            	
@@ -110,10 +111,13 @@ public class ApiExplorer {
                 addHome.pointX=xy[1];//(y,x) 형식??
                 addHome.pointY=xy[0];
             }
-            addHome.printHome();
+            //addHome.printHome();
             //DB에 추가
            if(addHome.pointX!=0) {
-        	   
+ 
+        	   //전세 지역코드+a, 월세 지역코드+b
+        	   if(addHome.renFee==0)connectDB.homeInsert(addHome,"a"+loc);
+        	   else connectDB.homeInsert(addHome,"b"+loc);
            }
         }
 

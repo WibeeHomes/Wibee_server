@@ -95,7 +95,7 @@ public class CityDTO {
 
         cityArr.add(new CityCode("세종특별자치시",36110));
 
-        cityArr.add(new CityCode("경기도 수원시 정자동",41111));
+        cityArr.add(new CityCode("경기도 수원시 정안구",41111));
         cityArr.add(new CityCode("경기도 수원시 권선구",41113));
         cityArr.add(new CityCode("경기도 수원시 영통구",41117));
         cityArr.add(new CityCode("경기도 수원시 팔달구",41115));

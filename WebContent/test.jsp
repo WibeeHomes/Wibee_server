@@ -10,11 +10,15 @@ ApiExplorer apidb=new ApiExplorer();
 %>
 <%
 //apidb.apiDB("apt","11110","202104");
-System.out.println("-----apartment complete-------");
-apidb.apiDB("rh","11110","202104");
-System.out.println("-------office complete-------");
+//System.out.println("-----apartment complete-------");
+//apidb.apiDB("rh","11110","202104");
+//System.out.println("-------office complete-------");
 //apidb.apiDB("rh","11110","201512");
-System.out.println("-----rh complete------");
+//System.out.println("-----rh complete------");
+//connectDB.tblCreate("home");
+connectDB.tblCreate("a"+"11110");
+connectDB.tblCreate("b"+"11110");
+apidb.apiDB("apt","11110","202104");
 %>
 <!DOCTYPE html>
 <html>

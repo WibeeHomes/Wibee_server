@@ -22,7 +22,7 @@ public class ConnectDB {
 	public ConnectDB() {}
 
 	// oracle 계정
-	private static final String jdbcUrl = "jdbc:oracle:thin:@127.0.0.1:1521:XE";
+	private static final String jdbcUrl = "jdbc:oracle:thin:@3.34.216.87:1521:XE";
 	private static final String userId = "system";
 	private static final String userPw = "oracle";
 	Statement stmt = null;
@@ -34,25 +34,77 @@ public class ConnectDB {
 	String sql = "";
 	String sql2 = "";
 	
-	// 지역코드 관련 테이블 생성하는 함수 
-	//1. home 정보 추가하는 함수
-	public void homeInsert(home home) {
+	// 지역코드를 이름으로 테이블을 생성하는 함수
+	public void tblCreate(String loc) {	
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
-			sql = "insert into pmoving values(?,?,?,?,?,?)";
+			sql = "create table "+loc+"(hYear CHAR(4), hName VARCHAR2(50) NOT NULL, hFloor VARCHAR2(4), hArea VARCHAR2(10) NOT NULL,addDong VARCHAR2(20) NOT NULL, addJibun VARCHAR2(10) NOT NULL, warFee NUMBER NOT NULL, renFee NUMBER NOT NULL, PointX NUMBER(13,10) NOT NULL, PointY NUMBER(13,10) NOT NULL)";
 			pstmt = conn.prepareStatement(sql);
-	/*		pstmt.setString(1, );
-			pstmt.setString(2, plocnum);
-			pstmt.setDate(3, java.sql.Date.valueOf(visitdate));
-			pstmt.setDouble(4, PointX);
-			pstmt.setDouble(5, PointY);
-			pstmt.setNString(6, address);*/
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	// home 정보 추가하는 함수
+	public void homeInsert(home home, String loc) {
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
+			sql = "insert into " +loc+ " values(?,?,?,?,?,?,?,?,?,?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, home.hYear);
+			pstmt.setString(2, home.hName);
+			pstmt.setString(3, home.hFloor);
+			pstmt.setString(4, home.hArea);
+			pstmt.setString(5, home.addDong);
+			pstmt.setString(6, home.addJibun);
+			pstmt.setInt(7, home.warFee);
+			pstmt.setInt(8, home.renFee);
+			pstmt.setDouble(9, home.pointX);
+			pstmt.setDouble(10, home.pointY);
+
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/* 안드로이드 요청2: 모든 환자 정보 */
+	public JSONArray bringHomeInfo(String table) {
+		JSONArray arr = new JSONArray();
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
+
+			sql = "Select * from "+table;
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			if(rs != null){
+			while (rs.next()) {
+				JSONObject obj = new JSONObject();
+
+				obj.put("hyear", rs.getString(1));
+				obj.put("hname", rs.getString(2));
+				obj.put("hfloor", rs.getString(3));
+				obj.put("harea", rs.getString(4));
+				obj.put("adddong", rs.getString(5));
+				obj.put("addjibun", rs.getString(6));
+				obj.put("warfee", Integer.toString(rs.getInt(7)));
+				obj.put("renfee", Integer.toString(rs.getInt(8)));
+				obj.put("pointx", Double.toString(rs.getDouble(9)));
+				obj.put("pointy", Double.toString(rs.getDouble(10)));
+				
+				if (obj != null)arr.add(obj);
+			}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		//System.out.println(arr);
+		return arr;
+	}
 
 }
