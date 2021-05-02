@@ -144,15 +144,40 @@ public class ConnectDB {
 		return arr;
 	}
 	
-	public void woori() throws IOException{
-		URL url =new URL("https://openapi.wooribank.com:444/oai/wb/v1/lease/getLeaseHouseLoanAm");
+	public void woori(String loanType) throws IOException{
+		URL url=null;
+		if(loanType=="01") {
+			url=new URL("https://openapi.wooribank.com:444/oai/wb/v1/credit/getCreditLoanEmFnd");
+		}
+		else if(loanType=="02") {
+			url=new URL("https://openapi.wooribank.com:444/oai/wb/v1/credit/getCreditLoanWon");
+		}
+		else if(loanType=="03") {
+			url=new URL("https://openapi.wooribank.com:444/oai/wb/v1/lease/getLeaseHouseLoanAm");
+		}
 		HttpURLConnection conn =(HttpURLConnection)url.openConnection();
 		
 		conn.setRequestMethod("POST");
 		conn.setRequestProperty("appKey", "l7xxr5BZUYuDdfYMDiSLjwxuudN8JcBn1ci9");
+		
 		conn.setRequestProperty("Content-Type", "application/json");
 		conn.setDoOutput(true);
-		String jsonIn= "{\n\"dataHeader\": {\n  \"UTZPE_CNCT_IPAD\": \"\",\n  \"UTZPE_CNCT_MCHR_UNQ_ID\": \"\",\n  \"UTZPE_CNCT_TEL_NO_TXT\": \"\",\n  \"UTZPE_CNCT_MCHR_IDF_SRNO\": \"\",\n  \"UTZ_MCHR_OS_DSCD\": \"\",\n  \"UTZ_MCHR_OS_VER_NM\": \"\",\n  \"UTZ_MCHR_MDL_NM\": \"\",\n  \"UTZ_MCHR_APP_VER_NM\": \"\"\n},\n\"dataBody\": {\n  \"CRINF_INQ_AGR_YN\": \"Y\",\n  \"PSN_INF_OFR_AGR_YN\": \"Y\",\n  \"PRCI_UTZ_AGR_YN\": \"Y\",\n  \"SLF_ANL_ICM_AM\": \"67000000\",\n  \"ADR_KDCD\": \"3\",\n  \"POST_SRNO\": \"0\",\n  \"BLD_MNG_NO\": \"1111111111\",\n  \"MDBT_RQ_AM\": \"0\",\n  \"LEAS_GRN_AM\": \"70000000\",\n  \"LAWC_ADDN_NO\": \"\"\n}\n}\n";
+		String jsonIn="";
+		
+		if(loanType=="01") {
+			jsonIn= "{\n\"dataHeader\": {\n  \"UTZPE_CNCT_IPAD\": \"\",\n  \"UTZPE_CNCT_MCHR_UNQ_ID\": \"\",\n  \"UTZPE_CNCT_TEL_NO_TXT\": \"\",\n  \"UTZPE_CNCT_MCHR_IDF_SRNO\": \"\",\n  \"UTZ_MCHR_OS_DSCD\": \"\",\n  \"UTZ_MCHR_OS_VER_NM\": \"\",\n  \"UTZ_MCHR_MDL_NM\": \"\",\n  \"UTZ_MCHR_APP_VER_NM\": \"\"\n},";
+			jsonIn+=   "\n\"dataBody\": {\n  \"ENCY_ACNM_NO\": \"PfaC0qTumwYDk8TloqA==\",\n  \"CUS_KORL_NM\": \"홍길동\",\n  \"RQ_AM\": 3000000\n}\n}\n";
+			//jsonIn+= "\n\"dataBody\": {\n  \"ENCY_ACNM_NO\": \"PfaC0qTumwYDk8TloqA==\",\n  \"CUS_KORL_NM\": \"홍길동\",\n  \"RQ_AM\": 3000000\n}\n}\n";
+		}
+		else if(loanType=="02") {
+		jsonIn="{\n \"dataHeader\": {\n   \"UTZPE_CNCT_IPAD\": \"\",\n   \"UTZPE_CNCT_MCHR_UNQ_ID\": \"\",\n   \"UTZPE_CNCT_TEL_NO_TXT\": \"\",\n   \"UTZPE_CNCT_MCHR_IDF_SRNO\": \"\",\n   \"UTZ_MCHR_OS_DSCD\": \"\",\n   \"UTZ_MCHR_OS_VER_NM\": \"\",\n   \"UTZ_MCHR_MDL_NM\": \"\",\n   \"UTZ_MCHR_APP_VER_NM\": \"\"\n },";
+			jsonIn+= "\n \"dataBody\": {\n   \"ENCY_ACNM_NO\": \"PfaC0qTumwYDk8TloqA==\",\n   \"CUS_KORL_NM\": \"홍길동\",\n   \"RQ_AM\": \"15000000\" ,\n   \"BZPE_CRNO\": \"1002011111\",\n\"ENCN_DT\": \"20200101\",\n\"HLD_YINC_AM\": 50000000,\n\"ORG_NAME\": \"WOORIBANK\", \"EXTR_IDF_REFC_KEY_TXT\": \"woori202005180303\"\n }\n}\n";
+		}
+		else if(loanType=="03") {
+			jsonIn= "{\n\"dataHeader\": {\n  \"UTZPE_CNCT_IPAD\": \"\",\n  \"UTZPE_CNCT_MCHR_UNQ_ID\": \"\",\n  \"UTZPE_CNCT_TEL_NO_TXT\": \"\",\n  \"UTZPE_CNCT_MCHR_IDF_SRNO\": \"\",\n  \"UTZ_MCHR_OS_DSCD\": \"\",\n  \"UTZ_MCHR_OS_VER_NM\": \"\",\n  \"UTZ_MCHR_MDL_NM\": \"\",\n  \"UTZ_MCHR_APP_VER_NM\": \"\"\n},";
+			jsonIn+= "\n\"dataBody\": {\n  \"CRINF_INQ_AGR_YN\": \"Y\",\n  \"PSN_INF_OFR_AGR_YN\": \"Y\",\n  \"PRCI_UTZ_AGR_YN\": \"Y\",\n  \"SLF_ANL_ICM_AM\": \"67000000\",\n  \"ADR_KDCD\": \"3\",\n  \"POST_SRNO\": \"0\",\n  \"BLD_MNG_NO\": \"1111111111\",\n  \"MDBT_RQ_AM\": \"0\",\n  \"LEAS_GRN_AM\": \"70000000\",\n  \"LAWC_ADDN_NO\": \"\"\n}\n}\n";
+			
+		}
 		
 		
 		byte[] body=jsonIn.getBytes();
@@ -171,7 +196,9 @@ public class ConnectDB {
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = rd.readLine()) != null) {
-            sb.append(line);
+        	line.trim();
+        	System.out.println(line);
+          sb.append(line);
         }
         rd.close();
         conn.disconnect();
