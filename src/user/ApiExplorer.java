@@ -74,7 +74,7 @@ public class ApiExplorer {
         // XML 데이터 중 <person> 태그의 내용을 가져온다.
         NodeList nList=doc.getElementsByTagName("item");
         
-        System.out.println("파싱할 리스트 수 : "+ nList.getLength()+loc+" "+type);
+        System.out.println("파싱할 리스트 수 : "+ nList.getLength()+" -> "+loc+" "+type);
  
         for(int i=0; i<nList.getLength(); i++) {
             Node nNode=nList.item(i);
@@ -83,8 +83,8 @@ public class ApiExplorer {
                 
                 String hYear=getTagValue("건축년도", eElement);
                 if(hYear!=null)addHome.hYear=hYear;// 집 건축년도
-            	String floor=getTagValue("층", eElement).trim();
-            	if(floor!=null)addHome.hFloor= floor; //층수
+            	String floor=getTagValue("층", eElement);
+            	if(floor!=null)addHome.hFloor= floor.trim(); //층수
             	addHome.hArea=getTagValue("전용면적", eElement); // 면적
             	addHome.addDong=getTagValue("법정동", eElement).trim();// 주소-법정동
             	addHome.addJibun=getTagValue("지번", eElement);// 지번
@@ -111,7 +111,7 @@ public class ApiExplorer {
                 addHome.pointX=xy[1];//(y,x) 형식??
                 addHome.pointY=xy[0];
             }
-            //addHome.printHome();
+           // addHome.printHome();
             //DB에 추가
            if(addHome.pointX!=0) {
  

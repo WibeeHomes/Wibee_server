@@ -11,7 +11,7 @@ public class CityDTO {
     }
     public CityDTO(){
         
-        cityArr.add(new CityCode("서울특별시 종로구",11110));
+        cityArr.add(new CityCode("서울특별시 종로구",11110));//0
         cityArr.add(new CityCode("서울특별시 중구",11140));
         cityArr.add(new CityCode("서울특별시 용산구",11170));
         cityArr.add(new CityCode("서울특별시 성동구",11200));
@@ -22,10 +22,11 @@ public class CityDTO {
         cityArr.add(new CityCode("서울특별시 강북구",11305));
         cityArr.add(new CityCode("서울특별시 도봉구",11320));
         cityArr.add(new CityCode("서울특별시 노원구",11350));
-        cityArr.add(new CityCode("서울특별시 은평구",11380));
+        
+        cityArr.add(new CityCode("서울특별시 은평구",11380));//11
         cityArr.add(new CityCode("서울특별시 서대문구",11410));
         cityArr.add(new CityCode("서울특별시 마포구",11440));
-        cityArr.add(new CityCode("서울특별시 양천구",11470));
+        cityArr.add(new CityCode("서울특별시 양천구",11470));//14
         cityArr.add(new CityCode("서울특별시 강서구",11500));
         cityArr.add(new CityCode("서울특별시 구로구",11530));
         cityArr.add(new CityCode("서울특별시 금천구",11545));

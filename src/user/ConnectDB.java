@@ -39,7 +39,19 @@ public class ConnectDB {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
-			sql = "create table "+loc+"(hYear CHAR(4), hName VARCHAR2(50) NOT NULL, hFloor VARCHAR2(4), hArea VARCHAR2(10) NOT NULL,addDong VARCHAR2(20) NOT NULL, addJibun VARCHAR2(10) NOT NULL, warFee NUMBER NOT NULL, renFee NUMBER NOT NULL, PointX NUMBER(13,10) NOT NULL, PointY NUMBER(13,10) NOT NULL)";
+			sql = "create table "+loc+"(hYear CHAR(4), hName VARCHAR2(70) NOT NULL, hFloor VARCHAR2(4), hArea VARCHAR2(10) NOT NULL,addDong VARCHAR2(20) NOT NULL, addJibun VARCHAR2(10) NOT NULL, warFee NUMBER NOT NULL, renFee NUMBER NOT NULL, PointX NUMBER(13,10) NOT NULL, PointY NUMBER(13,10) NOT NULL,hcate NUMBER NOT NULL)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void tblDelete(String tbl) {	
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
+			sql = "drop table "+tbl;
 			pstmt = conn.prepareStatement(sql);
 			pstmt.executeUpdate();
 		} catch (Exception e) {
@@ -51,7 +63,7 @@ public class ConnectDB {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
-			sql = "insert into " +loc+ " values(?,?,?,?,?,?,?,?,?,?)";
+			sql = "insert into " +loc+ " values(?,?,?,?,?,?,?,?,?,?,?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, home.hYear);
 			pstmt.setString(2, home.hName);
@@ -63,6 +75,7 @@ public class ConnectDB {
 			pstmt.setInt(8, home.renFee);
 			pstmt.setDouble(9, home.pointX);
 			pstmt.setDouble(10, home.pointY);
+			pstmt.setInt(11, home.hCate);
 
 			pstmt.executeUpdate();
 		} catch (Exception e) {
@@ -77,7 +90,7 @@ public class ConnectDB {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
 
-			sql = "Select * from "+table;
+			sql = "select * from (select * from "+table+" order by warfee) where rownum<=30";
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 
@@ -95,6 +108,8 @@ public class ConnectDB {
 				obj.put("renfee", Integer.toString(rs.getInt(8)));
 				obj.put("pointx", Double.toString(rs.getDouble(9)));
 				obj.put("pointy", Double.toString(rs.getDouble(10)));
+				obj.put("hcate", Integer.toString(rs.getInt(11)));
+
 				
 				if (obj != null)arr.add(obj);
 			}
