@@ -116,7 +116,7 @@ public class ConnectDB {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
 
-			sql = "select * from (select * from "+table+" order by warfee) where rownum<=30";
+			sql = "select * from (select * from "+table+" order by warfee) where rownum<=3";
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
@@ -127,10 +127,10 @@ public class ConnectDB {
 			while (rs.next()) {
 				JSONObject obj = new JSONObject();
 				JSONObject all=new JSONObject();
-				JSONObject loan1=woori("01");
-				JSONObject loan2=woori("02");
+				JSONObject loan1=woori("01","PfaC0qTumwYDk8TloqA==","홍길동","1002011111","","","");
+				JSONObject loan2=woori("02","PfaC0qTumwYDk8TloqA==","홍길동","1002011111","","","");
 				JSONObject loan3=null;
-				if(rent.equals("a"))loan3=woori("03");
+				if(rent.equals("a"))loan3=woori("03","PfaC0qTumwYDk8TloqA==","홍길동","1002011111","","","");
 
 		
 
@@ -162,7 +162,7 @@ public class ConnectDB {
 		return arr;
 	}
 	
-	public JSONObject woori(String loanType) throws IOException, ParseException{
+	public JSONObject woori(String loanType, String pName,String rName,String company, String comDay, String income, String budget) throws IOException, ParseException{
 		URL url=null;
 		if(loanType=="01") {
 			url=new URL("https://openapi.wooribank.com:444/oai/wb/v1/credit/getCreditLoanEmFnd");
@@ -176,7 +176,7 @@ public class ConnectDB {
 		HttpURLConnection conn =(HttpURLConnection)url.openConnection();
 		
 		conn.setRequestMethod("POST");
-		conn.setRequestProperty("appKey", "l7xxr5BZUYuDdfYMDiSLjwxuudN8JcBn1ci9");
+		conn.setRequestProperty("appKey", "l7xxcYoENLGuojyu3d97r4IM2jCuDNEHnS7P");
 		
 		conn.setRequestProperty("Content-Type", "application/json");
 		conn.setDoOutput(true);
@@ -184,19 +184,17 @@ public class ConnectDB {
 		
 		if(loanType=="01") {
 			jsonIn= "{\n\"dataHeader\": {\n  \"UTZPE_CNCT_IPAD\": \"\",\n  \"UTZPE_CNCT_MCHR_UNQ_ID\": \"\",\n  \"UTZPE_CNCT_TEL_NO_TXT\": \"\",\n  \"UTZPE_CNCT_MCHR_IDF_SRNO\": \"\",\n  \"UTZ_MCHR_OS_DSCD\": \"\",\n  \"UTZ_MCHR_OS_VER_NM\": \"\",\n  \"UTZ_MCHR_MDL_NM\": \"\",\n  \"UTZ_MCHR_APP_VER_NM\": \"\"\n},";
-			jsonIn+= "\n\"dataBody\": {\n  \"ENCY_ACNM_NO\": \"PfaC0qTumwYDk8TloqA==\",\n  \"CUS_KORL_NM\": \""+ "홍길동" +"\",\n  \"RQ_AM\": 3000000\n}\n}\n";
-			//jsonIn+= pName;
-		//	jsonIn+=",\n  \"CUS_KORL_NM\": \"";
-		//	jsonIn+= pName;
-		//	jsonIn+= "";
+			jsonIn+=   "\n\"dataBody\": {\n  \"ENCY_ACNM_NO\": \""+pName+"\",\n  \"CUS_KORL_NM\": \""+rName+"\",\n  \"RQ_AM\": 3000000\n}\n}\n";
+			//jsonIn+= "\n\"dataBody\": {\n  \"ENCY_ACNM_NO\": \"PfaC0qTumwYDk8TloqA==\",\n  \"CUS_KORL_NM\": \"홍길동\",\n  \"RQ_AM\": 3000000\n}\n}\n";
 		}
 		else if(loanType=="02") {
 		jsonIn="{\n \"dataHeader\": {\n   \"UTZPE_CNCT_IPAD\": \"\",\n   \"UTZPE_CNCT_MCHR_UNQ_ID\": \"\",\n   \"UTZPE_CNCT_TEL_NO_TXT\": \"\",\n   \"UTZPE_CNCT_MCHR_IDF_SRNO\": \"\",\n   \"UTZ_MCHR_OS_DSCD\": \"\",\n   \"UTZ_MCHR_OS_VER_NM\": \"\",\n   \"UTZ_MCHR_MDL_NM\": \"\",\n   \"UTZ_MCHR_APP_VER_NM\": \"\"\n },";
-			jsonIn+= "\n \"dataBody\": {\n   \"ENCY_ACNM_NO\": \"PfaC0qTumwYDk8TloqA==\",\n   \"CUS_KORL_NM\": \"홍길동\",\n   \"RQ_AM\": \"15000000\" ,\n   \"BZPE_CRNO\": \"1002011111\",\n\"ENCN_DT\": \"20200101\",\n\"HLD_YINC_AM\": 50000000,\n\"ORG_NAME\": \"WOORIBANK\", \"EXTR_IDF_REFC_KEY_TXT\": \"woori202005180303\"\n }\n}\n";
+			jsonIn+= "\n \"dataBody\": {\n   \"ENCY_ACNM_NO\": \""+pName+"\",\n   \"CUS_KORL_NM\": \""+rName+"\",\n   \"RQ_AM\": \"15000000\" ,\n   \"BZPE_CRNO\": \""+company+"\",\n\"ENCN_DT\": \""+comDay+"\",\n\"HLD_YINC_AM\": "+Integer.parseInt(income)+",\n\"ORG_NAME\": \"WOORIBANK\", \"EXTR_IDF_REFC_KEY_TXT\": \"woori202005180303\"\n }\n}\n";
+			//jsonIn+= "\n \"dataBody\": {\n   \"ENCY_ACNM_NO\": \"PfaC0qTumwYDk8TloqA==\",\n   \"CUS_KORL_NM\": \"홍길동\",\n   \"RQ_AM\": \"15000000\" ,\n   \"BZPE_CRNO\": \"1002011111\",\n\"ENCN_DT\": \"20200101\",\n\"HLD_YINC_AM\": 50000000,\n\"ORG_NAME\": \"WOORIBANK\", \"EXTR_IDF_REFC_KEY_TXT\": \"woori202005180303\"\n }\n}\n";
 		}
 		else if(loanType=="03") {
 			jsonIn= "{\n\"dataHeader\": {\n  \"UTZPE_CNCT_IPAD\": \"\",\n  \"UTZPE_CNCT_MCHR_UNQ_ID\": \"\",\n  \"UTZPE_CNCT_TEL_NO_TXT\": \"\",\n  \"UTZPE_CNCT_MCHR_IDF_SRNO\": \"\",\n  \"UTZ_MCHR_OS_DSCD\": \"\",\n  \"UTZ_MCHR_OS_VER_NM\": \"\",\n  \"UTZ_MCHR_MDL_NM\": \"\",\n  \"UTZ_MCHR_APP_VER_NM\": \"\"\n},";
-			jsonIn+= "\n\"dataBody\": {\n  \"CRINF_INQ_AGR_YN\": \"Y\",\n  \"PSN_INF_OFR_AGR_YN\": \"Y\",\n  \"PRCI_UTZ_AGR_YN\": \"Y\",\n  \"SLF_ANL_ICM_AM\": \"67000000\",\n  \"ADR_KDCD\": \"3\",\n  \"POST_SRNO\": \"0\",\n  \"BLD_MNG_NO\": \"1111111111\",\n  \"MDBT_RQ_AM\": \"0\",\n  \"LEAS_GRN_AM\": \"70000000\",\n  \"LAWC_ADDN_NO\": \"\"\n}\n}\n";
+			jsonIn+= "\n\"dataBody\": {\n  \"CRINF_INQ_AGR_YN\": \"Y\",\n  \"PSN_INF_OFR_AGR_YN\": \"Y\",\n  \"PRCI_UTZ_AGR_YN\": \"Y\",\n  \"SLF_ANL_ICM_AM\": \""+income+"\",\n  \"ADR_KDCD\": \"3\",\n  \"POST_SRNO\": \"0\",\n  \"BLD_MNG_NO\": \"1111111111\",\n  \"MDBT_RQ_AM\": \"0\",\n  \"LEAS_GRN_AM\": \"70000000\",\n  \"LAWC_ADDN_NO\": \"\"\n}\n}\n";
 			
 		}
 		
@@ -207,7 +205,7 @@ public class ConnectDB {
 
         java.io.OutputStream out = conn.getOutputStream();
         out.write(body);
-      //  System.out.println("Response code: " + conn.getResponseCode());
+        System.out.println("Response code: " + conn.getResponseCode());
         BufferedReader rd;
         if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -230,8 +228,10 @@ public class ConnectDB {
         JSONObject jsonObj = (JSONObject) obj;
         JSONObject test= (JSONObject) jsonObj.get("dataBody");
         
-       // System.out.println(test);
+        
+        
+      //  System.out.println(test);
         return test;
 		}
 		
-}
+}	
