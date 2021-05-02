@@ -9,9 +9,10 @@
 ConnectDB connectDB = ConnectDB.getInstance();
 ApiExplorer apidb=new ApiExplorer();
 ArrayList<CityCode> cityarr=new CityDTO().getCityArr();
-//connectDB.woori("01");
-connectDB.woori("02");
-connectDB.woori("03");
+//connectDB.woori("01","mon");
+//connectDB.woori("02","war");
+//connectDB.woori("03","mon");
+JSONArray arr=connectDB.bringHomeInfo("b11110");
 %>
 
 <!DOCTYPE html>
@@ -21,7 +22,7 @@ connectDB.woori("03");
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>DAO확인</title>
  
-
+<%=arr %>
 
  
 </head>

@@ -1,9 +1,9 @@
 package user;
 
 import org.json.simple.JSONArray;
-
-
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.omg.CORBA.portable.OutputStream;
 
 import java.beans.Statement;
@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,6 +34,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import javax.net.ssl.HttpsURLConnection;
+
 
 
 
@@ -117,10 +119,20 @@ public class ConnectDB {
 			sql = "select * from (select * from "+table+" order by warfee) where rownum<=30";
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
+			
+			String rent=table.substring(0,1);
+			System.out.println("%"+rent+"%");
 
 			if(rs != null){
 			while (rs.next()) {
 				JSONObject obj = new JSONObject();
+				JSONObject all=new JSONObject();
+				JSONObject loan1=woori("01");
+				JSONObject loan2=woori("02");
+				JSONObject loan3=null;
+				if(rent.equals("a"))loan3=woori("03");
+
+		
 
 				obj.put("hyear", rs.getString(1));
 				obj.put("hname", rs.getString(2));
@@ -134,17 +146,23 @@ public class ConnectDB {
 				obj.put("pointy", Double.toString(rs.getDouble(10)));
 				obj.put("hcate", Integer.toString(rs.getInt(11)));
 				
-				if (obj != null)arr.add(obj);
+				if (obj != null) {
+					all.put("home",obj);
+					all.put("loan1",loan1);
+					all.put("loan2",loan2);
+					if(rent.equals("a"))all.put("loan3",loan3);
+
+					arr.add(all);}
 			}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//System.out.println(arr);
+		System.out.println(arr);
 		return arr;
 	}
 	
-	public void woori(String loanType) throws IOException{
+	public JSONObject woori(String loanType) throws IOException, ParseException{
 		URL url=null;
 		if(loanType=="01") {
 			url=new URL("https://openapi.wooribank.com:444/oai/wb/v1/credit/getCreditLoanEmFnd");
@@ -186,7 +204,7 @@ public class ConnectDB {
 
         java.io.OutputStream out = conn.getOutputStream();
         out.write(body);
-        System.out.println("Response code: " + conn.getResponseCode());
+      //  System.out.println("Response code: " + conn.getResponseCode());
         BufferedReader rd;
         if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -197,12 +215,20 @@ public class ConnectDB {
         String line;
         while ((line = rd.readLine()) != null) {
         	line.trim();
-        	System.out.println(line);
+        //	System.out.println("%"+line+"%");
           sb.append(line);
         }
         rd.close();
         conn.disconnect();
-        System.out.println(sb.toString());
+        //System.out.println(sb.toString());
+        String jsonStr=sb.toString();
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(jsonStr);
+        JSONObject jsonObj = (JSONObject) obj;
+        JSONObject test= (JSONObject) jsonObj.get("dataBody");
+        
+       // System.out.println(test);
+        return test;
 		}
 		
 }	

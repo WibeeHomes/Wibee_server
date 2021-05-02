@@ -20,12 +20,11 @@ ConnectDB connectDB = ConnectDB.getInstance();
 */
 
 
-//okhttp 정리
 
 //테스트-json만 받는 
 if (locCode == null) { System.out.println("실패");return;}
 else{
-JSONArray arr = connectDB.bringHomeInfo("b"+locCode);// 나중에 월세인지 전세인지 구분해서
+JSONArray arr = connectDB.bringHomeInfo(locCode);// 나중에 월세인지 전세인지 구분해서
 System.out.println(arr);
 out.println(arr);// 안드로이드로 전송
 System.out.println("성공했습니다");}
