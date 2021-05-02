@@ -1,7 +1,11 @@
 package user;
 
 import org.json.simple.JSONArray;
+
+
 import org.json.simple.JSONObject;
+import org.omg.CORBA.portable.OutputStream;
+
 import java.beans.Statement;
 import java.sql.Connection;
 import java.sql.Date;
@@ -11,6 +15,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+
+import javax.net.ssl.HttpsURLConnection;
+
+
 
 public class ConnectDB {
 	private static ConnectDB instance = new ConnectDB();
@@ -39,7 +63,7 @@ public class ConnectDB {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
-			sql = "create table "+loc+"(hYear CHAR(4), hName VARCHAR2(70) NOT NULL, hFloor VARCHAR2(4), hArea VARCHAR2(10) NOT NULL,addDong VARCHAR2(20) NOT NULL, addJibun VARCHAR2(10) NOT NULL, warFee NUMBER NOT NULL, renFee NUMBER NOT NULL, PointX NUMBER(13,10) NOT NULL, PointY NUMBER(13,10) NOT NULL,hcate NUMBER NOT NULL)";
+			sql = "create table "+loc+"(hYear CHAR(4), hName VARCHAR2(70) NOT NULL, hFloor VARCHAR2(4), hArea VARCHAR2(10) NOT NULL,addDong VARCHAR2(30) NOT NULL, addJibun VARCHAR2(10) NOT NULL, warFee NUMBER NOT NULL, renFee NUMBER NOT NULL, PointX NUMBER(13,10) NOT NULL, PointY NUMBER(13,10) NOT NULL,hcate NUMBER NOT NULL)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.executeUpdate();
 		} catch (Exception e) {
@@ -109,7 +133,6 @@ public class ConnectDB {
 				obj.put("pointx", Double.toString(rs.getDouble(9)));
 				obj.put("pointy", Double.toString(rs.getDouble(10)));
 				obj.put("hcate", Integer.toString(rs.getInt(11)));
-
 				
 				if (obj != null)arr.add(obj);
 			}
@@ -117,9 +140,44 @@ public class ConnectDB {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		//System.out.println(arr);
 		return arr;
 	}
+	
+	public void woori() throws IOException{
+		URL url =new URL("https://openapi.wooribank.com:444/oai/wb/v1/lease/getLeaseHouseLoanAm");
+		HttpURLConnection conn =(HttpURLConnection)url.openConnection();
+		
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("appKey", "l7xxr5BZUYuDdfYMDiSLjwxuudN8JcBn1ci9");
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setDoOutput(true);
+		String jsonIn= "{\n\"dataHeader\": {\n  \"UTZPE_CNCT_IPAD\": \"\",\n  \"UTZPE_CNCT_MCHR_UNQ_ID\": \"\",\n  \"UTZPE_CNCT_TEL_NO_TXT\": \"\",\n  \"UTZPE_CNCT_MCHR_IDF_SRNO\": \"\",\n  \"UTZ_MCHR_OS_DSCD\": \"\",\n  \"UTZ_MCHR_OS_VER_NM\": \"\",\n  \"UTZ_MCHR_MDL_NM\": \"\",\n  \"UTZ_MCHR_APP_VER_NM\": \"\"\n},\n\"dataBody\": {\n  \"CRINF_INQ_AGR_YN\": \"Y\",\n  \"PSN_INF_OFR_AGR_YN\": \"Y\",\n  \"PRCI_UTZ_AGR_YN\": \"Y\",\n  \"SLF_ANL_ICM_AM\": \"67000000\",\n  \"ADR_KDCD\": \"3\",\n  \"POST_SRNO\": \"0\",\n  \"BLD_MNG_NO\": \"1111111111\",\n  \"MDBT_RQ_AM\": \"0\",\n  \"LEAS_GRN_AM\": \"70000000\",\n  \"LAWC_ADDN_NO\": \"\"\n}\n}\n";
+		
+		
+		byte[] body=jsonIn.getBytes();
+		conn.setFixedLengthStreamingMode(body.length);
+        conn.setDoOutput(true);
 
-}
+        java.io.OutputStream out = conn.getOutputStream();
+        out.write(body);
+        System.out.println("Response code: " + conn.getResponseCode());
+        BufferedReader rd;
+        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        } else {
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+        }
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            sb.append(line);
+        }
+        rd.close();
+        conn.disconnect();
+        System.out.println(sb.toString());
+		}
+		
+}	
+	
+

@@ -18,6 +18,11 @@ ConnectDB connectDB = ConnectDB.getInstance();
 2. 월세 : a. 사람 정보 가지고 대출 조회(비상자금, 직장인)-> b. 통합 대출 가능 아파트 리스트 계산 ->  a의 대출 정보, b의 아파트 리스트 안드로이드로 전송 
 
 */
+
+
+//okhttp 정리
+
+//테스트-json만 받는 
 if (locCode == null) { System.out.println("실패");return;}
 else{
 JSONArray arr = connectDB.bringHomeInfo("b"+locCode);// 나중에 월세인지 전세인지 구분해서

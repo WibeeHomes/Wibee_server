@@ -43,7 +43,7 @@ public class CityDTO {
         cityArr.add(new CityCode("부산광역시 동구",26170));
         cityArr.add(new CityCode("부산광역시 영도구",26200));
         cityArr.add(new CityCode("부산광역시 부산진구",26230));
-        cityArr.add(new CityCode("부산광역시 동래구",26260));
+        cityArr.add(new CityCode("부산광역시 동래구",26260));//30
         cityArr.add(new CityCode("부산광역시 남구",26290));
         cityArr.add(new CityCode("부산광역시 북구",26320));
         cityArr.add(new CityCode("부산광역시 해운대구",26350));
@@ -94,7 +94,7 @@ public class CityDTO {
         cityArr.add(new CityCode("울산광역시 북구",31200));
         cityArr.add(new CityCode("울산광역시 울주군",31710));
 
-        cityArr.add(new CityCode("세종특별자치시",36110));
+        cityArr.add(new CityCode("세종특별자치시",36110));//74
 
         cityArr.add(new CityCode("경기도 수원시 정안구",41111));
         cityArr.add(new CityCode("경기도 수원시 권선구",41113));
