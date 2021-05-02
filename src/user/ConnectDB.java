@@ -184,8 +184,11 @@ public class ConnectDB {
 		
 		if(loanType=="01") {
 			jsonIn= "{\n\"dataHeader\": {\n  \"UTZPE_CNCT_IPAD\": \"\",\n  \"UTZPE_CNCT_MCHR_UNQ_ID\": \"\",\n  \"UTZPE_CNCT_TEL_NO_TXT\": \"\",\n  \"UTZPE_CNCT_MCHR_IDF_SRNO\": \"\",\n  \"UTZ_MCHR_OS_DSCD\": \"\",\n  \"UTZ_MCHR_OS_VER_NM\": \"\",\n  \"UTZ_MCHR_MDL_NM\": \"\",\n  \"UTZ_MCHR_APP_VER_NM\": \"\"\n},";
-			jsonIn+=   "\n\"dataBody\": {\n  \"ENCY_ACNM_NO\": \"PfaC0qTumwYDk8TloqA==\",\n  \"CUS_KORL_NM\": \"홍길동\",\n  \"RQ_AM\": 3000000\n}\n}\n";
-			//jsonIn+= "\n\"dataBody\": {\n  \"ENCY_ACNM_NO\": \"PfaC0qTumwYDk8TloqA==\",\n  \"CUS_KORL_NM\": \"홍길동\",\n  \"RQ_AM\": 3000000\n}\n}\n";
+			jsonIn+= "\n\"dataBody\": {\n  \"ENCY_ACNM_NO\": \"PfaC0qTumwYDk8TloqA==\",\n  \"CUS_KORL_NM\": \""+ "홍길동" +"\",\n  \"RQ_AM\": 3000000\n}\n}\n";
+			//jsonIn+= pName;
+		//	jsonIn+=",\n  \"CUS_KORL_NM\": \"";
+		//	jsonIn+= pName;
+		//	jsonIn+= "";
 		}
 		else if(loanType=="02") {
 		jsonIn="{\n \"dataHeader\": {\n   \"UTZPE_CNCT_IPAD\": \"\",\n   \"UTZPE_CNCT_MCHR_UNQ_ID\": \"\",\n   \"UTZPE_CNCT_TEL_NO_TXT\": \"\",\n   \"UTZPE_CNCT_MCHR_IDF_SRNO\": \"\",\n   \"UTZ_MCHR_OS_DSCD\": \"\",\n   \"UTZ_MCHR_OS_VER_NM\": \"\",\n   \"UTZ_MCHR_MDL_NM\": \"\",\n   \"UTZ_MCHR_APP_VER_NM\": \"\"\n },";
@@ -231,6 +234,4 @@ public class ConnectDB {
         return test;
 		}
 		
-}	
-	
-
+}
