@@ -110,7 +110,7 @@ public class ConnectDB {
 	}
 	
 	/* 안드로이드 요청2: 모든 환자 정보 */
-	public JSONArray bringHomeInfo(String table) {
+	public JSONArray bringHomeInfo(String table, String pName,String rName,String company, String comDay, String income, String budget) {
 		JSONArray arr = new JSONArray();
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -121,16 +121,16 @@ public class ConnectDB {
 			rs = pstmt.executeQuery();
 			
 			String rent=table.substring(0,1);
-			System.out.println("%"+rent+"%");
+			//System.out.println("%"+rent+"%");
 
 			if(rs != null){
 			while (rs.next()) {
 				JSONObject obj = new JSONObject();
 				JSONObject all=new JSONObject();
-				JSONObject loan1=woori("01","PfaC0qTumwYDk8TloqA==","홍길동","1002011111","","","");
-				JSONObject loan2=woori("02","PfaC0qTumwYDk8TloqA==","홍길동","1002011111","","","");
+				JSONObject loan1=woori("01",pName,rName,company,comDay,income,budget);
+				JSONObject loan2=woori("02",pName,rName,company,comDay,income,budget);
 				JSONObject loan3=null;
-				if(rent.equals("a"))loan3=woori("03","PfaC0qTumwYDk8TloqA==","홍길동","1002011111","","","");
+				if(rent.equals("a"))loan3=woori("03",pName,rName,company,comDay,income,budget);
 
 		
 
