@@ -10,7 +10,11 @@ ConnectDB connectDB = ConnectDB.getInstance();
 //ApiExplorer apidb=new ApiExplorer();
 //ArrayList<CityCode> cityarr=new CityDTO().getCityArr();
 //connectDB.woori("01","PfaC0qTumwYDk8TloqA==","홍길동","","","","");
-connectDB.woori("03","PfaC0qTumwYDk8TloqA==","홍길동","1002011111","20200101","5000000","6000");
+
+			System.out.println(connectDB.woori("01","PfaC0qTumwYDk8TloqA==","홍길동","1002011111","20200101","50000"));
+		//	JSONObject loan2=woori("02",pName,rName,company,comDay,income);
+			System.out.println(connectDB.woori("02","PfaC0qTumwYDk8TloqA==","홍길동","1002011111","20200101","50000"));
+
 //connectDB.woori("02");
 //connectDB.woori("03");
 //JSONArray arr=connectDB.bringHomeInfo("b11110");

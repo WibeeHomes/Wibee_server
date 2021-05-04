@@ -7,7 +7,6 @@
 request.setCharacterEncoding("utf-8");
 
 String locCode = request.getParameter("localCode");
-
 String pName =request.getParameter("pName");
 String rName=request.getParameter("rName");
 String company=request.getParameter("company");
@@ -33,7 +32,7 @@ ConnectDB connectDB = ConnectDB.getInstance();
 if (locCode == null) { System.out.println("실패");return;}
 else{
 	System.out.println("받은값"+locCode);
-JSONArray arr = connectDB.bringHomeInfo(locCode,pName,rName,company,comDay,income,budget);// 나중에 월세인지 전세인지 구분해서
+	JSONArray arr = connectDB.bringHomeInfo(locCode,pName,rName,company,comDay,income,budget);// 나중에 월세인지 전세인지 구분해서
 System.out.println(arr);
 out.println(arr);// 안드로이드로 전송
 System.out.println("성공했습니다");}
