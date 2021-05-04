@@ -109,11 +109,13 @@ public class ConnectDB {
 		}
 	}
 	
-	/* 안드로이드 요청2: 모든 환자 정보 */
-	public JSONArray bringHomeInfo(String table, String pName,String rName,String company, String comDay, String income,String budget) {
+	/* 안드로이드 요청2: 모든 부동산 정보 */
+	public JSONArray renInfo(String table, String pName,String rName,String company, String comDay, String income,String budget) {
 		JSONArray arr = new JSONArray();
 		try {
-			//월차면 1,2 대출만 가지고 1,2 대출+ budget 보다 작은 렌트비+한달월세 집 출력하
+			//월세면 1,2 대출만 가지고 1,2 대출+ budget 보다 작은 렌트비+한달월세 집 출력하
+			//전세면 모든 db를 돌며 해당 물건지 정보로 wo03 함수 호출 후 대출가능금액 찾아오기 그 중 1,2,3 대출가능금액 합한게 물건지 정보 warfee 보다 낮은거 리턴할 obj 리스트에 추
+			
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
 			
@@ -132,17 +134,19 @@ public class ConnectDB {
 			
 			double allMoney=0;
 			allMoney=Double.parseDouble(budget)+loanBi+loanJik;
-			System.out.println("다더한거: "+allMoney+"   int형한"+(int)allMoney);
+			//System.out.println("다더한거: "+allMoney+"   int형한"+(int)allMoney);
 			
 
-			int money=(int)allMoney/10000;
-			System.out.println(money);
+			//int money=(int)allMoney/10000;
+			//System.out.println(money);
 			
-			money=500000;
-			sql = "select * from (select * from "+table+" where warfee<"+money+" order by warfee) where rownum<=10";
+				//sql = "select * from (select * from "+table+" where (warfee+renfee)<"+(int)allMoney+" order by warfee) where rownum<=10";
+			sql = "select * from (select * from "+table+" where (warfee+renfee)<"+(int)allMoney+" order by warfee) where rownum<=10";
+				
+			System.out.println("월세 총"+(int)allMoney);
+
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
-						
 			
 
 			if(rs != null){
@@ -158,22 +162,20 @@ public class ConnectDB {
 				obj.put("adddong", rs.getString(5));
 				obj.put("addjibun", rs.getString(6));
 				String warfee=Integer.toString(rs.getInt(7));
+				System.out.println(warfee);
 				obj.put("warfee", warfee);
 				obj.put("renfee", Integer.toString(rs.getInt(8)));
 				obj.put("pointx", Double.toString(rs.getDouble(9)));
 				obj.put("pointy", Double.toString(rs.getDouble(10)));
 				obj.put("hcate", Integer.toString(rs.getInt(11)));
-				
-				JSONObject loan3=null;
-				if(rent.equals("a")) {loan3=wo03(income,warfee,"table.substring(1,7)");}
 
 				if (obj != null) {
 					all.put("home",obj);
 					all.put("loan1",loan1);
 					all.put("loan2",loan2);
-					if(rent.equals("a"))all.put("loan3",loan3);
+					arr.add(all);
+					}
 
-					arr.add(all);}
 			}
 			}
 		} catch (Exception e) {
@@ -184,7 +186,91 @@ public class ConnectDB {
 	}
 	
 	
-	
+	/* 안드로이드 요청2: 모든 부동산 정보 */
+	public JSONArray warInfo(String table, String pName,String rName,String company, String comDay, String income,String budget) {
+		JSONArray arr = new JSONArray();
+		try {
+			//월세면 1,2 대출만 가지고 1,2 대출+ budget 보다 작은 렌트비+한달월세 집 출력하
+			//전세면 모든 db를 돌며 해당 물건지 정보로 wo03 함수 호출 후 대출가능금액 찾아오기 그 중 1,2,3 대출가능금액 합한게 물건지 정보 warfee 보다 낮은거 리턴할 obj 리스트에 추
+			
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(jdbcUrl, userId, userPw);
+			
+			JSONObject loan1=woori("01",pName,rName,company,comDay,income);
+			JSONObject loan2=woori("02",pName,rName,company,comDay,income);
+			//전/월세 구
+			String rent=table.substring(0,1);
+			//비상자금 대출금
+			double loanBi=(double) loan1.get("APV_AM");
+			
+			//직장인 대출
+		//	System.out.println(loanBi+"%");
+			
+			double loanJik=(double) loan2.get("APV_AM");
+			//System.out.println(loanJik+"^");
+			
+			double allMoney=0;
+			allMoney=Double.parseDouble(budget)+(loanBi/10000)+(loanJik/10000);
+			//System.out.println("다더한거: "+allMoney+"   int형한"+(int)allMoney);
+			
+
+			int money=(int)allMoney;
+			//System.out.println("처음"+money);
+			
+			sql="select * from (select * from "+table+") where rownum<=5";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			
+			if(rs != null){
+			while (rs.next()) {
+				JSONObject obj = new JSONObject();
+				JSONObject all=new JSONObject();
+				
+				
+				obj.put("hyear", rs.getString(1));
+				obj.put("hname", rs.getString(2));
+				obj.put("hfloor", rs.getString(3));
+				obj.put("harea", rs.getString(4));
+				obj.put("adddong", rs.getString(5));
+				obj.put("addjibun", rs.getString(6));
+				int warfee=rs.getInt(7);
+				
+				obj.put("warfee", Integer.toString(warfee));
+				obj.put("renfee", Integer.toString(rs.getInt(8)));
+				obj.put("pointx", Double.toString(rs.getDouble(9)));
+				obj.put("pointy", Double.toString(rs.getDouble(10)));
+				obj.put("hcate", Integer.toString(rs.getInt(11)));
+				
+				JSONObject loan3=null;
+				loan3=wo03(income,Integer.toString(warfee),table.substring(1,6));
+				String loanJ=(String) loan3.get("FRCS_AVL_LN_AM");//전세자금 대출에서 빌릴 수 있는 돈(원)
+				int mozi=(Integer.parseInt(loanJ))/10000;
+				money+=mozi;
+				//System.out.println("두번"+mozi+"돈  "+money);
+				
+				//if(warfee>money) System.out.println("money 가 적"+money+"   "+ warfee);
+				//else if(warfee<money) System.out.println("war이 ");
+				//else System.out.println("뭐야 ㅅ");
+
+
+
+				if ((obj != null)&&(warfee<money)) {//warfee단위 만원
+					//System.out.println("무선일이"+loanJ);
+					all.put("home",obj);
+					all.put("loan1",loan1);
+					all.put("loan2",loan2);
+					all.put("loan3",loan3);
+					arr.add(all);}
+			}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(arr);
+		return arr;
+	}
+
 	
 	
 	
@@ -212,7 +298,7 @@ public class ConnectDB {
 
         java.io.OutputStream out = conn.getOutputStream();
         out.write(body);
-        System.out.println("Response code: " + conn.getResponseCode());
+       // System.out.println("Response code: " + conn.getResponseCode());
         BufferedReader rd;
         if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -276,7 +362,7 @@ public class ConnectDB {
 
         java.io.OutputStream out = conn.getOutputStream();
         out.write(body);
-        System.out.println("Response code: " + conn.getResponseCode());
+      //  System.out.println("Response code: " + conn.getResponseCode());
         BufferedReader rd;
         if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
