@@ -14,11 +14,9 @@ String time="202104";
 ConnectDB connectDB = ConnectDB.getInstance();
 //기존의 테이블이 있는 space drop 후 생성- 기존 정보 전부 삭
 
-
-
 //물건지 정보  DB에 저장 (아파트, 연립, 오피스)--> 모든 법정동 코드를 돌며 해당 월의 물건지 정보를 DB에 저한다.
 	
-for(int i=74;i<cityarr.size();i++){// 법정동 리스트의 크기 만큼 for문 돌기
+for(int i=0;i<cityarr.size();i++){// 법정동 리스트의 크기 만큼 for문 돌기
 	connectDB.tblCreate("a"+cityarr.get(i).getCode());//전세
 	connectDB.tblCreate("b"+cityarr.get(i).getCode());//월세
 	apidb.apiDB("apt",cityarr.get(i).getCode(),time);

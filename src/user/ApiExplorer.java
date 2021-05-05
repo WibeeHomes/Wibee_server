@@ -1,10 +1,7 @@
 package user;
 
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,25 +13,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import java.beans.Statement;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-
 public class ApiExplorer {
-	//기존 테이블 drop 하는 함수
-	
-	//테이블 create 하는 함수 
-	
+
 	//API 파싱해서 DB에 저장하는 함수
     public void apiDB(String type, String loc, String time) throws IOException, ParserConfigurationException, SAXException {
     	
